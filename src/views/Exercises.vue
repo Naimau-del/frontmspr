@@ -1,5 +1,5 @@
 <template>
-  <div class="container-fluid mt-4">
+  <div class="container mt-4">
     <div class="d-flex justify-content-between align-items-center mb-4">
       <h2 class="text-primary">Sessions d'Exercices</h2>
       <div>
@@ -190,9 +190,6 @@
                       Actions
                     </button>
                     <ul class="dropdown-menu">
-                      <li><a class="dropdown-item" href="#" @click="viewSessionDetails(session)">
-                        <i class="bi bi-eye"></i> Voir détails
-                      </a></li>
                       <li><a class="dropdown-item" href="#" @click="router.push(`/exercise/${session.Session_ID}`)">
                         <i class="bi bi-pencil"></i> Modifier
                       </a></li>

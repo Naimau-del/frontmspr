@@ -1,5 +1,5 @@
 <template>
-  <div class="container-fluid mt-4">
+  <div class="container mt-4">
     <div class="d-flex justify-content-between align-items-center mb-4">
       <h2 class="text-primary">Gestion des Données</h2>
       <div class="d-flex gap-2">
@@ -147,9 +147,21 @@
               <button class="btn btn-outline-primary" @click="viewUsers">
                 <i class="bi bi-people"></i> Gérer les Utilisateurs ({{ userStore.users.length }})
               </button>
+              <button class="btn btn-primary" :disabled="etlLoading.users" @click="importUsers">
+                <span v-if="etlLoading.users" class="spinner-border spinner-border-sm me-1"></span>
+                <i v-else class="bi bi-upload"></i>
+                {{ etlLoading.users ? 'Import en cours...' : 'Importer Utilisateurs (ETL)' }}
+              </button>
+
               <button class="btn btn-outline-success" @click="viewNutrition">
                 <i class="bi bi-basket3"></i> Gérer les Produits ({{ nutritionStore.products.length }})
               </button>
+              <button class="btn btn-success" :disabled="etlLoading.products" @click="importProducts">
+                <span v-if="etlLoading.products" class="spinner-border spinner-border-sm me-1"></span>
+                <i v-else class="bi bi-upload"></i>
+                {{ etlLoading.products ? 'Import en cours...' : 'Importer Produits (ETL)' }}
+              </button>
+
               <button class="btn btn-outline-info" @click="viewExercises">
                 <i class="bi bi-activity"></i> Gérer les Sessions ({{ exerciseStore.workoutSessions.length }})
               </button>
@@ -178,6 +190,7 @@ const router = useRouter()
 
 // État local
 const isLoading = ref(false)
+const etlLoading = ref({ users: false, products: false })
 
 // Computed
 const hasErrors = computed(() => {
@@ -310,9 +323,56 @@ const viewExercises = () => {
   router.push('/exercises')
 }
 
-const exportAllData = () => {
-  // TODO: Implémenter l'export global
-  alert('Fonctionnalité d\'export global à venir')
+const importUsers = async () => {
+  // TODO: appeler l'endpoint ETL d'import utilisateurs
+  etlLoading.value.users = true
+  try {
+    // await apiService.etlImportUsers()
+    await userStore.fetchUsers()
+  } finally {
+    etlLoading.value.users = false
+  }
+}
+
+const importProducts = async () => {
+  // TODO: appeler l'endpoint ETL d'import produits
+  etlLoading.value.products = true
+  try {
+    // await apiService.etlImportProducts()
+    await nutritionStore.fetchProducts()
+  } finally {
+    etlLoading.value.products = false
+  }
+}
+
+const exportAllData = async () => {
+  const exports = [
+    'users.csv',
+    'products.csv',
+    'equipment.csv',
+    'meal-logs.csv',
+    'workout-sessions.csv',
+    'biometrics-logs.csv',
+  ]
+
+  const token = localStorage.getItem('healthai_token')
+  const headers: HeadersInit = token ? { Authorization: `Bearer ${token}` } : {}
+
+  for (const filename of exports) {
+    try {
+      const response = await fetch(`http://localhost:8000/api/v0/exports/${filename}`, { headers })
+      if (!response.ok) continue
+      const blob = await response.blob()
+      const url = URL.createObjectURL(blob)
+      const a = document.createElement('a')
+      a.href = url
+      a.download = filename
+      a.click()
+      URL.revokeObjectURL(url)
+    } catch (e) {
+      console.error(`Erreur export ${filename}:`, e)
+    }
+  }
 }
 
 const validateAllData = () => {

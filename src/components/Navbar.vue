@@ -66,8 +66,15 @@
           </li>
         </ul>
         <div class="navbar-nav ms-auto">
-          <span class="navbar-text me-3">
-            <i class="bi bi-person-circle"></i> {{ authStore.user?.User_mail || 'Utilisateur' }}
+          <router-link
+            v-if="authStore.user"
+            :to="`/user/${authStore.user.User_ID}`"
+            class="navbar-text me-3 text-white text-decoration-none"
+          >
+            <i class="bi bi-person-circle"></i> {{ authStore.user.User_mail.split('@')[0] }}
+          </router-link>
+          <span v-else class="navbar-text me-3">
+            <i class="bi bi-person-circle"></i> ...
           </span>
           <button 
             class="btn btn-outline-light btn-sm"

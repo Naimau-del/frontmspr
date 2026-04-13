@@ -1,5 +1,5 @@
 <template>
-  <div class="container-fluid mt-4">
+  <div class="container mt-4">
     <div class="d-flex justify-content-between align-items-center mb-4">
       <h2 class="text-primary">Base Nutritionnelle</h2>
       <div>
@@ -168,9 +168,6 @@
                     <ul class="dropdown-menu">
                       <li><a class="dropdown-item" href="#" @click="router.push(`/nutrition/${product.Product_ID}`)">
                         <i class="bi bi-pencil"></i> Modifier
-                      </a></li>
-                      <li><a class="dropdown-item" href="#" @click="viewProductDetails(product)">
-                        <i class="bi bi-eye"></i> Détails
                       </a></li>
                       <li><hr class="dropdown-divider"></li>
                       <li><a class="dropdown-item text-danger" href="#" @click="deleteProductPrompt(product.Product_ID)">

@@ -179,9 +179,6 @@
                         <li><a class="dropdown-item" href="#" @click="router.push(`/user/${user.User_ID}`)">
                           <i class="bi bi-pencil"></i> Modifier
                         </a></li>
-                        <li><a class="dropdown-item" href="#" @click="viewUserDetails(user)">
-                          <i class="bi bi-eye"></i> Voir détails
-                        </a></li>
                         <li><hr class="dropdown-divider"></li>
                         <li><a class="dropdown-item text-danger" href="#" @click="deleteUserPrompt(user.User_ID)">
                           <i class="bi bi-trash"></i> Supprimer

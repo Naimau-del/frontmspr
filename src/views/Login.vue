@@ -15,7 +15,7 @@
             class="form-control" 
             id="email" 
             v-model="form.email"
-            placeholder="admin@healthai.com"
+            placeholder="votre adresse email"
             required
           >
         </div>
@@ -27,7 +27,7 @@
             class="form-control" 
             id="password" 
             v-model="form.password"
-            placeholder="••••••••"
+            placeholder="votre mot de passe"
             required
           >
         </div>
@@ -113,7 +113,7 @@ const handleLogin = async () => {
 <style scoped>
 .login-container {
   min-height: 100vh;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  width: 100%;
   display: flex;
   align-items: center;
   justify-content: center;

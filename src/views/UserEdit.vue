@@ -18,9 +18,9 @@
                     <label class="form-label">Email *</label>
                     <input v-model="form.User_mail" type="email" class="form-control" required>
                   </div>
-                  <div class="mb-3" v-if="!isEditing">
-                    <label class="form-label">Mot de passe *</label>
-                    <input v-model="form.User_password" type="password" class="form-control" required>
+                  <div class="mb-3">
+                    <label class="form-label">Mot de passe {{ isEditing ? '(laisser vide pour ne pas modifier)' : '*' }}</label>
+                    <input v-model="form.User_password" type="password" class="form-control" :required="!isEditing">
                   </div>
                   <div class="mb-3">
                     <label class="form-label">Âge</label>

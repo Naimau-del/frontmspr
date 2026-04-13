@@ -118,6 +118,11 @@ class ApiService {
   }
 
   // Utilisateurs
+  async getCurrentUser(): Promise<User> {
+    const response = await apiClient.get('/users/me')
+    return response.data
+  }
+
   async getAllUsers(): Promise<User[]> {
     const response = await apiClient.get('/users')
     return response.data

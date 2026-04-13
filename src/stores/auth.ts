@@ -20,7 +20,7 @@ export const useAuthStore = defineStore('auth', () => {
       
       token.value = tokenResponse.access_token
       localStorage.setItem('healthai_token', tokenResponse.access_token)
-      
+      await fetchCurrentUser()
       router.push('/')
     } catch (err: any) {
       error.value = err.response?.data?.detail || 'Erreur de connexion'
@@ -44,11 +44,23 @@ export const useAuthStore = defineStore('auth', () => {
     }
   }
 
+  const fetchCurrentUser = async () => {
+    try {
+      user.value = await apiService.getCurrentUser()
+    } catch {
+      // token invalide ou expiré
+      logout()
+    }
+  }
+
   const clearError = () => {
     error.value = null
   }
 
   checkAuthStatus()
+  if (token.value) {
+    fetchCurrentUser()
+  }
 
   return {
     token,
@@ -60,6 +72,7 @@ export const useAuthStore = defineStore('auth', () => {
     login,
     logout,
     checkAuthStatus,
+    fetchCurrentUser,
     clearError
   }
 })

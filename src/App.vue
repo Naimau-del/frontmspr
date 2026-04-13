@@ -1,14 +1,19 @@
 <template>
   <div id="app">
-    <Navbar />
-    <main class="container-fluid mt-4">
+    <Navbar v-if="!isLoginPage" />
+    <main :class="isLoginPage ? 'fullscreen' : 'container-fluid mt-4'">
       <router-view :key="$route.fullPath" />
     </main>
   </div>
 </template>
 
 <script setup lang="ts">
+import { computed } from 'vue'
+import { useRoute } from 'vue-router'
 import Navbar from './components/Navbar.vue'
+
+const route = useRoute()
+const isLoginPage = computed(() => route.name === 'login')
 </script>
 
 <style>
@@ -44,6 +49,13 @@ main.container-fluid {
   padding-top: 1.5rem;
   clear: both;
   display: block;
+}
+
+main.fullscreen {
+  width: 100%;
+  height: 100vh;
+  padding: 0;
+  margin: 0;
 }
 
 @media (min-width: 1200px) {
