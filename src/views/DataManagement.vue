@@ -13,6 +13,10 @@
       </div>
     </div>
 
+    <div v-if="etlMessage" class="alert mb-4" :class="etlMessage.type === 'success' ? 'alert-success' : 'alert-danger'">
+      {{ etlMessage.text }}
+    </div>
+
     <!-- Data Sources Overview -->
     <div class="row mb-4">
       <div class="col-12">
@@ -176,6 +180,7 @@
 <script setup lang="ts">
 import { computed, onMounted, ref } from 'vue'
 import { useRouter } from 'vue-router'
+import { config } from '../config'
 import { useUserStore } from '../stores/users'
 import { useNutritionStore } from '../stores/nutrition'
 import { useExerciseStore } from '../stores/exercises'
@@ -191,6 +196,7 @@ const router = useRouter()
 // État local
 const isLoading = ref(false)
 const etlLoading = ref({ users: false, products: false })
+const etlMessage = ref<{ type: 'success' | 'error'; text: string } | null>(null)
 
 // Computed
 const hasErrors = computed(() => {
@@ -323,23 +329,81 @@ const viewExercises = () => {
   router.push('/exercises')
 }
 
+const pickCsvFile = async (): Promise<File | null> => {
+  return new Promise((resolve) => {
+    const input = document.createElement('input')
+    input.type = 'file'
+    input.accept = '.csv,text/csv'
+    input.onchange = () => resolve(input.files?.[0] ?? null)
+    input.click()
+  })
+}
+
+const uploadCsvToEtl = async (file: File): Promise<{ status: string; detected_queue: string }> => {
+  const formData = new FormData()
+  formData.append('file', file)
+
+  const response = await fetch(`${config.API_BASE_URL}/etl/upload`, {
+    method: 'POST',
+    body: formData,
+  })
+
+  if (!response.ok) {
+    throw new Error('Import ETL refusé. Vérifiez le format CSV et les colonnes attendues.')
+  }
+
+  return response.json()
+}
+
 const importUsers = async () => {
-  // TODO: appeler l'endpoint ETL d'import utilisateurs
+  etlMessage.value = null
+  const file = await pickCsvFile()
+  if (!file) {
+    return
+  }
+
   etlLoading.value.users = true
   try {
-    // await apiService.etlImportUsers()
+    const result = await uploadCsvToEtl(file)
     await userStore.fetchUsers()
+    await dashboardStore.fetchAllData()
+    etlMessage.value = {
+      type: 'success',
+      text: `Import ETL envoyé avec succès (${result.detected_queue}). Le traitement est asynchrone, actualisez après quelques secondes si nécessaire.`,
+    }
+  } catch (error) {
+    console.error('Erreur import utilisateurs ETL:', error)
+    etlMessage.value = {
+      type: 'error',
+      text: "Échec de l'import ETL utilisateurs. Vérifiez que votre CSV est valide et correspond au schéma attendu.",
+    }
   } finally {
     etlLoading.value.users = false
   }
 }
 
 const importProducts = async () => {
-  // TODO: appeler l'endpoint ETL d'import produits
+  etlMessage.value = null
+  const file = await pickCsvFile()
+  if (!file) {
+    return
+  }
+
   etlLoading.value.products = true
   try {
-    // await apiService.etlImportProducts()
+    const result = await uploadCsvToEtl(file)
     await nutritionStore.fetchProducts()
+    await dashboardStore.fetchAllData()
+    etlMessage.value = {
+      type: 'success',
+      text: `Import ETL envoyé avec succès (${result.detected_queue}). Le traitement est asynchrone, actualisez après quelques secondes si nécessaire.`,
+    }
+  } catch (error) {
+    console.error('Erreur import produits ETL:', error)
+    etlMessage.value = {
+      type: 'error',
+      text: "Échec de l'import ETL produits. Vérifiez que votre CSV est valide et correspond au schéma attendu.",
+    }
   } finally {
     etlLoading.value.products = false
   }
