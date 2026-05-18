@@ -1,6 +1,7 @@
 export const config = {
   API_BASE_URL: import.meta.env.VITE_API_URL || 'http://localhost:8000/api/v0',
-  
+  AI_BASE_URL: import.meta.env.VITE_AI_URL || 'http://localhost:8001',
+
   APP_NAME: 'HealthAI Coach',
   VERSION: '1.0.0',
   

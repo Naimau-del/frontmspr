@@ -64,6 +64,16 @@
               Données
             </a>
           </li>
+          <li class="nav-item">
+            <a
+              class="nav-link"
+              href="#"
+              :class="{ active: $route.name === 'ai-coach' }"
+              @click.prevent="navigateTo('/ai-coach')"
+            >
+              <i class="bi bi-robot me-1"></i> Coach IA
+            </a>
+          </li>
         </ul>
         <div class="navbar-nav ms-auto">
           <router-link

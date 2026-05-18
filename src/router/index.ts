@@ -9,6 +9,7 @@ import Exercises from '../views/Exercises.vue'
 import ExerciseEdit from '../views/ExerciseEdit.vue'
 import DataManagement from '../views/DataManagement.vue'
 import Login from '../views/Login.vue'
+import AiCoach from '../views/AiCoach.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -83,6 +84,12 @@ const router = createRouter({
       path: '/data',
       name: 'data',
       component: DataManagement,
+      meta: { requiresAuth: true }
+    },
+    {
+      path: '/ai-coach',
+      name: 'ai-coach',
+      component: AiCoach,
       meta: { requiresAuth: true }
     }
   ]

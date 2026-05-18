@@ -110,6 +110,14 @@
                 <label class="form-label fw-semibold">Préférences alimentaires</label>
                 <input v-model="nutritionForm.dietary_preferences" type="text" class="form-control" placeholder="ex: végétarien, sans porc" />
               </div>
+              <div class="mb-3">
+                <label class="form-label fw-semibold">Photo du repas (optionnel)</label>
+                <input type="file" accept="image/*" class="form-control" @change="onMealImageSelected" />
+                <div v-if="mealImagePreview" class="mt-2 d-flex align-items-center gap-2">
+                  <img :src="mealImagePreview" alt="Aperçu du repas" style="max-height:64px; border-radius:6px; object-fit:cover;" />
+                  <button class="btn btn-sm btn-outline-secondary" @click="removeMealImage">Supprimer</button>
+                </div>
+              </div>
               <button
                 class="btn btn-success w-100"
                 :disabled="nutritionLoading"
@@ -462,6 +470,42 @@ const nutritionForm = ref({
   dietary_preferences: '',
 })
 
+// Image meal preview / base64
+const mealImageFile = ref<File | null>(null)
+const mealImageBase64 = ref<string | null>(null)
+const mealImagePreview = ref<string | null>(null)
+
+function onMealImageSelected(e: Event) {
+  const input = e.target as HTMLInputElement
+  const file = input.files?.[0] ?? null
+  if (!file) {
+    mealImageFile.value = null
+    mealImageBase64.value = null
+    mealImagePreview.value = null
+    return
+  }
+  // limit client-side to 5MB
+  if (file.size > 5 * 1024 * 1024) {
+    nutritionError.value = 'Image trop volumineuse (max 5MB)'
+    return
+  }
+  mealImageFile.value = file
+  const reader = new FileReader()
+  reader.onload = () => {
+    const result = reader.result as string
+    mealImagePreview.value = result
+    const comma = result.indexOf(',')
+    mealImageBase64.value = comma !== -1 ? result.slice(comma + 1) : result
+  }
+  reader.readAsDataURL(file)
+}
+
+function removeMealImage() {
+  mealImageFile.value = null
+  mealImageBase64.value = null
+  mealImagePreview.value = null
+}
+
 // ── Workout ────────────────────────────────────────────────────────────────
 const workoutLoading = ref(false)
 const workoutError = ref<string | null>(null)
@@ -544,6 +588,10 @@ async function fetchNutritionRecommendation() {
   for (const f of fields) {
     const v = nutritionForm.value[f]
     if (v !== null && v !== '') payload[f] = v
+  }
+
+  if (mealImageBase64.value) {
+    payload.meal_image_base64 = mealImageBase64.value
   }
 
   try {
