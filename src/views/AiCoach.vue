@@ -183,6 +183,20 @@
               </div>
             </div>
 
+            <!-- Détection d'image (Mistral Vision) -->
+            <div v-if="nutritionResult.detected_foods && nutritionResult.detected_foods.length" class="alert alert-secondary mb-3 shadow-sm">
+              <strong><i class="bi bi-camera me-1"></i> Détecté sur votre photo :</strong>
+              <div class="d-flex flex-wrap gap-1 mt-2">
+                <span v-for="food in nutritionResult.detected_foods" :key="food" class="badge bg-secondary">{{ food }}</span>
+              </div>
+              <div v-if="nutritionResult.detected_macros" class="small mt-2 text-muted">
+                <strong>Estimation Mistral :</strong> {{ nutritionResult.detected_macros.estimated_calories }} kcal 
+                (Prot: {{ nutritionResult.detected_macros.estimated_protein }}g, 
+                Gluc: {{ nutritionResult.detected_macros.estimated_carbs }}g, 
+                Lip: {{ nutritionResult.detected_macros.estimated_fat }}g)
+              </div>
+            </div>
+
             <!-- Alertes -->
             <div v-for="warn in nutritionResult.deficit_warnings" :key="warn" class="alert alert-warning py-2">
               <i class="bi bi-exclamation-circle me-1"></i> {{ warn }}
