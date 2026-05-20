@@ -118,6 +118,19 @@
                   <button class="btn btn-sm btn-outline-secondary" @click="removeMealImage">Supprimer</button>
                 </div>
               </div>
+              <div class="mb-3 form-check">
+                <input
+                  v-model="nutritionForm.use_llm_enhancement"
+                  type="checkbox"
+                  class="form-check-input"
+                  id="nutritionLLM"
+                />
+                <label class="form-check-label" for="nutritionLLM">
+                  <i class="bi bi-robot text-success me-1"></i>
+                  <strong>Conseils IA personnalisés</strong>
+                  <small class="d-block text-muted ms-4">Génère des recommandations détaillées via Mistral AI</small>
+                </label>
+              </div>
               <button
                 class="btn btn-success w-100"
                 :disabled="nutritionLoading"
@@ -323,6 +336,19 @@
                 <label class="form-label fw-semibold">Blessures / contre-indications</label>
                 <input v-model="workoutForm.injuries" type="text" class="form-control" placeholder="ex: genou droit, dos" />
               </div>
+              <div class="mb-3 form-check">
+                <input
+                  v-model="workoutForm.use_llm_enhancement"
+                  type="checkbox"
+                  class="form-check-input"
+                  id="workoutLLM"
+                />
+                <label class="form-check-label" for="workoutLLM">
+                  <i class="bi bi-robot text-primary me-1"></i>
+                  <strong>Conseils IA personnalisés</strong>
+                  <small class="d-block text-muted ms-4">Génère des recommandations détaillées via Mistral AI</small>
+                </label>
+              </div>
               <button
                 class="btn btn-primary w-100"
                 :disabled="workoutLoading"
@@ -482,6 +508,7 @@ const nutritionForm = ref({
   budget_level: 'medium',
   allergies: '',
   dietary_preferences: '',
+  use_llm_enhancement: false,
 })
 
 // Image meal preview / base64
@@ -535,6 +562,7 @@ const workoutForm = ref({
   preferred_duration_min: 45,
   available_equipment: [] as string[],
   injuries: '',
+  use_llm_enhancement: false,
 })
 
 const equipmentOptions = [
@@ -592,7 +620,7 @@ async function fetchNutritionRecommendation() {
   const payload: Record<string, any> = {
     user_id: authStore.user.User_ID,
     nb_meals_per_day: nutritionForm.value.nb_meals_per_day,
-    use_llm_enhancement: false,
+    use_llm_enhancement: nutritionForm.value.use_llm_enhancement,
   }
 
   const fields: Array<keyof typeof nutritionForm.value> = [
@@ -627,7 +655,7 @@ async function fetchWorkoutRecommendation() {
   const payload: Record<string, any> = {
     user_id: authStore.user.User_ID,
     sessions_per_week: workoutForm.value.sessions_per_week,
-    use_llm_enhancement: false,
+    use_llm_enhancement: workoutForm.value.use_llm_enhancement,
   }
 
   const fields: Array<keyof typeof workoutForm.value> = [
