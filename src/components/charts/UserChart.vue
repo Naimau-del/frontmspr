@@ -99,7 +99,7 @@ const createChart = () => {
 }
 
 const updateChart = () => {
-  if (chartInstance && chartData.value) {
+  if (chartInstance && chartData.value && chartInstance.data.datasets && chartInstance.data.datasets[0] && chartInstance.data.datasets[1]) {
     chartInstance.data.labels = chartData.value.labels
     chartInstance.data.datasets[0].data = chartData.value.newUsers
     chartInstance.data.datasets[1].data = chartData.value.premiumUsers

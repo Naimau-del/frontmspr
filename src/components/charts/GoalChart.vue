@@ -83,7 +83,7 @@ const createChart = () => {
 }
 
 const updateChart = () => {
-  if (chartInstance && chartData.value.length) {
+  if (chartInstance && chartData.value.length && chartInstance.data.datasets && chartInstance.data.datasets[0]) {
     chartInstance.data.labels = chartData.value.map(item => item.label)
     chartInstance.data.datasets[0].data = chartData.value.map(item => item.value)
     chartInstance.update()

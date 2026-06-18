@@ -157,7 +157,7 @@ const resetForm = () => {
     }
   } else {
     // Mettre la date d'aujourd'hui par défaut
-    const today = new Date().toISOString().split('T')[0]
+    const today = new Date().toISOString().split('T')[0] || ''
     form.value = {
       Session_Date: today,
       Session_MaxBpm: null,

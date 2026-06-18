@@ -16,63 +16,38 @@
                 <div class="col-md-6">
                   <div class="mb-3">
                     <label class="form-label">Date de la session *</label>
-                    <input v-model="form.session_date" type="date" class="form-control" required>
+                    <input v-model="form.Session_Date" type="date" class="form-control" required>
                   </div>
                   <div class="mb-3">
                     <label class="form-label">Durée (minutes)</label>
-                    <input v-model.number="form.session_duration" type="number" class="form-control" min="1" step="1" 
+                    <input v-model.number="form.Session_Duration" type="number" class="form-control" min="1" step="1" 
                            placeholder="Ex: 45">
                   </div>
                   <div class="mb-3">
-                    <label class="form-label">Calories brûlées</label>
-                    <input v-model.number="form.calories_burn" type="number" class="form-control" min="0" step="1" 
-                           placeholder="Ex: 300">
+                    <label class="form-label">Type d'exercice</label>
+                    <input v-model="form.Session_Type" type="text" class="form-control" 
+                           placeholder="Ex: Course, Vélo, Musculation...">
                   </div>
                   <div class="mb-3">
-                    <label class="form-label">Intensité</label>
-                    <select v-model="form.intensity" class="form-select">
-                      <option value="">Sélectionner l'intensité</option>
-                      <option value="Faible">Faible</option>
-                      <option value="Modérée">Modérée</option>
-                      <option value="Élevée">Élevée</option>
-                      <option value="Très élevée">Très élevée</option>
-                    </select>
+                    <label class="form-label">Note de satisfaction (1-10)</label>
+                    <input v-model.number="form.User_Feedback_Score" type="number" class="form-control" min="1" max="10">
                   </div>
                 </div>
                 <div class="col-md-6">
                   <div class="mb-3">
                     <label class="form-label">Fréquence cardiaque moyenne (bpm)</label>
-                    <input v-model.number="form.heart_rate" type="number" class="form-control" min="40" max="220" 
+                    <input v-model.number="form.Session_AvgBpm" type="number" class="form-control" min="40" max="220" 
                            placeholder="Ex: 140">
                   </div>
                   <div class="mb-3">
-                    <label class="form-label">Distance (km)</label>
-                    <input v-model.number="form.distance" type="number" step="0.1" class="form-control" min="0" 
-                           placeholder="Ex: 5.2">
+                    <label class="form-label">Fréquence cardiaque maximale (bpm)</label>
+                    <input v-model.number="form.Session_MaxBpm" type="number" class="form-control" min="60" max="220">
                   </div>
                   <div class="mb-3">
-                    <label class="form-label">Type d'exercice</label>
-                    <input v-model="form.exercise_type" type="text" class="form-control" 
-                           placeholder="Ex: Course, Vélo, Musculation...">
-                  </div>
-                  <div class="mb-3">
-                    <label class="form-label">Zone de fréquence cardiaque</label>
-                    <select v-model="form.heart_rate_zone" class="form-select">
-                      <option value="">Non spécifiée</option>
-                      <option value="Zone 1 - Récupération">Zone 1 - Récupération (50-60%)</option>
-                      <option value="Zone 2 - Aérobie de base">Zone 2 - Aérobie de base (60-70%)</option>
-                      <option value="Zone 3 - Aérobie">Zone 3 - Aérobie (70-80%)</option>
-                      <option value="Zone 4 - Anaérobie">Zone 4 - Anaérobie (80-90%)</option>
-                      <option value="Zone 5 - VO2 Max">Zone 5 - VO2 Max (90-100%)</option>
-                    </select>
+                    <label class="form-label">Fréquence cardiaque de repos (bpm)</label>
+                    <input v-model.number="form.Session_RestingBpm" type="number" class="form-control" min="30" max="200">
                   </div>
                 </div>
-              </div>
-              
-              <div class="mb-3">
-                <label class="form-label">Notes sur la session</label>
-                <textarea v-model="form.session_notes" class="form-control" rows="3" 
-                          placeholder="Notes sur l'entraînement, ressenti, conditions..."></textarea>
               </div>
               
               <!-- Résumé de la session -->
@@ -82,21 +57,17 @@
                     <div class="card-body">
                       <h6 class="card-title">Résumé de la session</h6>
                       <div class="row text-center">
-                        <div class="col-md-3" v-if="form.session_duration">
-                          <div class="text-primary"><strong>{{ form.session_duration }}</strong></div>
+                        <div class="col-md-4" v-if="form.Session_Duration">
+                          <div class="text-primary"><strong>{{ form.Session_Duration }}</strong></div>
                           <small class="text-muted">minutes</small>
                         </div>
-                        <div class="col-md-3" v-if="form.calories_burn">
-                          <div class="text-danger"><strong>{{ form.calories_burn }}</strong></div>
-                          <small class="text-muted">kcal</small>
+                        <div class="col-md-4" v-if="form.Session_AvgBpm">
+                          <div class="text-warning"><strong>{{ form.Session_AvgBpm }}</strong></div>
+                          <small class="text-muted">bpm (moy)</small>
                         </div>
-                        <div class="col-md-3" v-if="form.distance">
-                          <div class="text-success"><strong>{{ form.distance }}</strong></div>
-                          <small class="text-muted">km</small>
-                        </div>
-                        <div class="col-md-3" v-if="form.heart_rate">
-                          <div class="text-warning"><strong>{{ form.heart_rate }}</strong></div>
-                          <small class="text-muted">bpm</small>
+                        <div class="col-md-4" v-if="form.User_Feedback_Score">
+                          <div class="text-success"><strong>{{ form.User_Feedback_Score }}/10</strong></div>
+                          <small class="text-muted">Note</small>
                         </div>
                       </div>
                     </div>
@@ -131,49 +102,45 @@ const exercisesStore = useExerciseStore()
 const isEditing = computed(() => !!route.params.id)
 const sessionId = computed(() => route.params.id ? parseInt(route.params.id as string) : null)
 
-const hasSessionData = computed(() => {
-  return form.value.session_duration || form.value.calories_burn || form.value.distance || form.value.heart_rate
+const form = ref({
+  Session_Date: '',
+  Session_Duration: null as number | null,
+  Session_Type: '',
+  User_Feedback_Score: null as number | null,
+  Session_AvgBpm: null as number | null,
+  Session_MaxBpm: null as number | null,
+  Session_RestingBpm: null as number | null,
 })
 
-const form = ref({
-  session_date: '',
-  session_duration: null as number | null,
-  calories_burn: null as number | null,
-  intensity: '',
-  heart_rate: null as number | null,
-  distance: null as number | null,
-  exercise_type: '',
-  heart_rate_zone: '',
-  session_notes: ''
+const hasSessionData = computed(() => {
+  return form.value.Session_Duration || form.value.Session_AvgBpm || form.value.User_Feedback_Score
 })
 
 const loadSession = async () => {
-  if (sessionId.value && exercisesStore.sessions.length === 0) {
-    await exercisesStore.fetchSessions()
+  if (sessionId.value && exercisesStore.workoutSessions.length === 0) {
+    await exercisesStore.fetchWorkoutSessions()
   }
   
   if (sessionId.value) {
-    const session = exercisesStore.sessions.find((s: any) => s.Session_ID === sessionId.value)
+    const session = exercisesStore.workoutSessions.find((s: any) => s.Session_ID === sessionId.value)
     if (session) {
       // Formater la date pour l'input date HTML
-      const sessionDate = session.session_date ? new Date(session.session_date) : new Date()
-      const formattedDate = sessionDate.toISOString().split('T')[0]
+      const sessionDate = session.Session_Date ? new Date(session.Session_Date) : new Date()
+      const formattedDate = sessionDate.toISOString().split('T')[0] || ''
       
       form.value = {
-        session_date: formattedDate,
-        session_duration: session.session_duration,
-        calories_burn: session.calories_burn,
-        intensity: session.intensity || '',
-        heart_rate: session.heart_rate,
-        distance: session.distance,
-        exercise_type: session.exercise_type || '',
-        heart_rate_zone: session.heart_rate_zone || '',
-        session_notes: session.session_notes || ''
+        Session_Date: formattedDate,
+        Session_Duration: session.Session_Duration,
+        Session_Type: session.Session_Type || '',
+        User_Feedback_Score: session.User_Feedback_Score,
+        Session_AvgBpm: session.Session_AvgBpm,
+        Session_MaxBpm: session.Session_MaxBpm,
+        Session_RestingBpm: session.Session_RestingBpm,
       }
     }
   } else {
     // Valeur par défaut pour une nouvelle session : date d'aujourd'hui
-    form.value.session_date = new Date().toISOString().split('T')[0]
+    form.value.Session_Date = new Date().toISOString().split('T')[0] || ''
   }
 }
 
@@ -181,11 +148,11 @@ const saveSession = async () => {
   try {
     if (isEditing.value && sessionId.value) {
       // Modification
-      await exercisesStore.updateSession(sessionId.value, form.value)
+      await exercisesStore.updateWorkoutSession(sessionId.value, form.value as any)
       alert('Session modifiée avec succès!')
     } else {
       // Création
-      await exercisesStore.createSession(form.value)
+      await exercisesStore.createWorkoutSession(form.value as any)
       alert('Session créée avec succès!')
     }
     
