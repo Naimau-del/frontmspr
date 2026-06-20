@@ -169,6 +169,11 @@
               <button class="btn btn-outline-info" @click="viewExercises">
                 <i class="bi bi-activity"></i> Gérer les Sessions ({{ exerciseStore.workoutSessions.length }})
               </button>
+              <button class="btn btn-info text-white" :disabled="etlLoading.exercises" @click="importExercises">
+                <span v-if="etlLoading.exercises" class="spinner-border spinner-border-sm me-1"></span>
+                <i v-else class="bi bi-upload"></i>
+                {{ etlLoading.exercises ? 'Import en cours...' : 'Importer Sessions (ETL)' }}
+              </button>
             </div>
           </div>
         </div>
@@ -195,7 +200,7 @@ const router = useRouter()
 
 // État local
 const isLoading = ref(false)
-const etlLoading = ref({ users: false, products: false })
+const etlLoading = ref({ users: false, products: false, exercises: false })
 const etlMessage = ref<{ type: 'success' | 'error'; text: string } | null>(null)
 
 // Computed
@@ -406,6 +411,33 @@ const importProducts = async () => {
     }
   } finally {
     etlLoading.value.products = false
+  }
+}
+
+const importExercises = async () => {
+  etlMessage.value = null
+  const file = await pickCsvFile()
+  if (!file) {
+    return
+  }
+
+  etlLoading.value.exercises = true
+  try {
+    const result = await uploadCsvToEtl(file)
+    await exerciseStore.fetchWorkoutSessions()
+    await dashboardStore.fetchAllData()
+    etlMessage.value = {
+      type: 'success',
+      text: `Import ETL envoyé avec succès (${result.detected_queue}). Le traitement est asynchrone, actualisez après quelques secondes si nécessaire.`,
+    }
+  } catch (error) {
+    console.error('Erreur import sessions ETL:', error)
+    etlMessage.value = {
+      type: 'error',
+      text: "Échec de l'import ETL sessions. Vérifiez que votre CSV est valide et correspond au schéma attendu.",
+    }
+  } finally {
+    etlLoading.value.exercises = false
   }
 }
 
