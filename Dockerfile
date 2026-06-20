@@ -7,8 +7,11 @@ COPY package.json package-lock.json ./
 RUN npm ci
 
 # Allow overriding Vite API URL at build time.
-ARG VITE_API_URL=http://localhost:8000/api/v0
+ARG VITE_API_URL=/api/v0
 ENV VITE_API_URL=${VITE_API_URL}
+
+ARG VITE_AI_URL=/ai-api
+ENV VITE_AI_URL=${VITE_AI_URL}
 
 COPY . .
 RUN npm run build-only
