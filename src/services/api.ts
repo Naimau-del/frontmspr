@@ -124,7 +124,7 @@ class ApiService {
   }
 
   async getAllUsers(): Promise<User[]> {
-    const response = await apiClient.get('/users')
+    const response = await apiClient.get('/users/')
     return response.data
   }
 
@@ -134,7 +134,7 @@ class ApiService {
   }
 
   async createUser(userData: Omit<User, 'User_ID' | 'created_at' | 'updated_at'> & { User_password: string }): Promise<User> {
-    const response = await apiClient.post('/users', userData)
+    const response = await apiClient.post('/users/', userData)
     return response.data
   }
 
@@ -149,7 +149,7 @@ class ApiService {
 
   // Produits
   async getAllProducts(): Promise<Product[]> {
-    const response = await apiClient.get('/products')
+    const response = await apiClient.get('/products/')
     return response.data
   }
 
@@ -159,7 +159,7 @@ class ApiService {
   }
 
   async createProduct(productData: Omit<Product, 'Product_ID' | 'created_at' | 'updated_at'>): Promise<Product> {
-    const response = await apiClient.post('/products', productData)
+    const response = await apiClient.post('/products/', productData)
     return response.data
   }
 
@@ -174,7 +174,7 @@ class ApiService {
 
   // Sessions d'entraînement
   async getAllWorkoutSessions(): Promise<WorkoutSession[]> {
-    const response = await apiClient.get('/workout-sessions')
+    const response = await apiClient.get('/workout-sessions/')
     return response.data
   }
 
@@ -184,7 +184,7 @@ class ApiService {
   }
 
   async createWorkoutSession(sessionData: Omit<WorkoutSession, 'Session_ID' | 'User_ID' | 'created_at' | 'updated_at'>): Promise<WorkoutSession> {
-    const response = await apiClient.post('/workout-sessions', sessionData)
+    const response = await apiClient.post('/workout-sessions/', sessionData)
     return response.data
   }
 
