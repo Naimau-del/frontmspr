@@ -39,8 +39,7 @@ export interface LoginCredentials {
 }
 
 export interface TokenResponse {
-  access_token: string
-  token_type: string
+  token: string
 }
 
 export interface User {

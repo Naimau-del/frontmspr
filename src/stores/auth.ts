@@ -18,8 +18,8 @@ export const useAuthStore = defineStore('auth', () => {
     try {
       const tokenResponse = await apiService.login(credentials)
       
-      token.value = tokenResponse.access_token
-      localStorage.setItem('healthai_token', tokenResponse.access_token)
+      token.value = tokenResponse.token
+      localStorage.setItem('healthai_token', tokenResponse.token)
       await fetchCurrentUser()
       router.push('/')
     } catch (err: any) {
