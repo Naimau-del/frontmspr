@@ -30,7 +30,14 @@ export const useAuthStore = defineStore('auth', () => {
     }
   }
 
-  const logout = () => {
+  const logout = async () => {
+    if (token.value) {
+      try {
+        await apiService.logout()
+      } catch (err) {
+        console.error('Logout error:', err)
+      }
+    }
     token.value = null
     user.value = null
     localStorage.removeItem('healthai_token')

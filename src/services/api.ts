@@ -106,8 +106,20 @@ export interface WorkoutSession {
 class ApiService {
   // Authentification
   async login(credentials: LoginCredentials): Promise<TokenResponse> {
-    const response = await apiClient.post('/users/login', credentials)
+    const formData = new URLSearchParams()
+    formData.append('username', credentials.User_mail)
+    formData.append('password', credentials.User_password)
+
+    const response = await apiClient.post('/auth/login', formData, {
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded'
+      }
+    })
     return response.data
+  }
+
+  async logout(): Promise<void> {
+    await apiClient.post('/auth/logout')
   }
 
   // Analytics
