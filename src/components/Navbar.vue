@@ -74,6 +74,15 @@
               <i class="bi bi-robot me-1"></i> Coach IA
             </a>
           </li>
+          <li class="nav-item">
+            <a
+              class="nav-link"
+              :href="grafanaUrl"
+              target="_blank"
+            >
+              <i class="bi bi-graph-up me-1"></i> Grafana
+            </a>
+          </li>
         </ul>
         <div class="navbar-nav ms-auto">
           <router-link
@@ -99,11 +108,16 @@
 </template>
 
 <script setup lang="ts">
+import { computed } from 'vue'
 import { useRouter } from 'vue-router'
 import { useAuthStore } from '../stores/auth'
 
 const router = useRouter()
 const authStore = useAuthStore()
+
+const grafanaUrl = computed(() => {
+  return `${window.location.protocol}//${window.location.hostname}:3000`
+})
 
 const navigateTo = (path: string) => {
   console.log('Navigation to:', path)
