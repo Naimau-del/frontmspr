@@ -19,6 +19,10 @@
                     <input v-model="form.User_mail" type="email" class="form-control" required>
                   </div>
                   <div class="mb-3">
+                    <label class="form-label">Nom d'affichage *</label>
+                    <input v-model="form.User_DisplayName" type="text" class="form-control" required placeholder="ex: johndoe42">
+                  </div>
+                  <div class="mb-3">
                     <label class="form-label">Mot de passe {{ isEditing ? '(laisser vide pour ne pas modifier)' : '*' }}</label>
                     <input v-model="form.User_password" type="password" class="form-control" :required="!isEditing">
                   </div>
@@ -100,6 +104,24 @@
           </div>
         </div>
       </div>
+
+      <!-- Profile picture sidebar (editing only) -->
+      <div class="col-lg-4" v-if="isEditing">
+        <div class="card text-center">
+          <div class="card-body py-4">
+            <img
+              :src="profilePictureUrl"
+              :alt="form.User_DisplayName"
+              class="rounded-circle mb-3 border border-3 border-primary-subtle shadow-sm"
+              style="width: 120px; height: 120px; object-fit: cover;"
+              @error="onAvatarError"
+            />
+            <h5 class="card-title mb-1">{{ form.User_DisplayName || '—' }}</h5>
+            <p class="text-muted small mb-0">{{ form.User_mail }}</p>
+          </div>
+        </div>
+      </div>
+
     </div>
   </div>
 </template>
@@ -109,8 +131,17 @@ import { computed, onMounted, ref } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
 import { useUserStore } from '../stores/users'
 
+const profilePictureUrl = ref<string>('')
+
+const onAvatarError = (e: Event) => {
+  const img = e.target as HTMLImageElement
+  const name = encodeURIComponent(form.value.User_DisplayName || 'User')
+  img.src = `https://ui-avatars.com/api/?name=${name}&background=random`
+}
+
 type UserForm = {
   User_mail: string
+  User_DisplayName: string
   User_password: string
   User_Subscription: string
   User_age: number | null
@@ -134,6 +165,7 @@ const userId = computed(() => route.params.id ? parseInt(route.params.id as stri
 
 const form = ref<UserForm>({
   User_mail: '',
+  User_DisplayName: '',
   User_password: '',
   User_Subscription: '',
   User_age: null,
@@ -160,6 +192,7 @@ const loadUser = async () => {
 
   form.value = {
     User_mail: user.User_mail || '',
+    User_DisplayName: user.User_DisplayName || '',
     User_password: '',
     User_Subscription: user.User_Subscription || '',
     User_age: user.User_age,
@@ -173,6 +206,11 @@ const loadUser = async () => {
     User_Injuries: user.User_Injuries || '',
     isAdmin: user.isAdmin || false,
   }
+
+  // Load avatar: use stored URL or fall back to ui-avatars with the display name
+  const name = encodeURIComponent(user.User_DisplayName || 'User')
+  profilePictureUrl.value = user.profile_picture_url
+    || `https://ui-avatars.com/api/?name=${name}&background=random`
 }
 
 const saveUser = async () => {
