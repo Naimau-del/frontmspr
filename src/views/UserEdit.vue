@@ -229,7 +229,14 @@ const saveUser = async () => {
 
     router.push('/users')
   } catch (error: any) {
-    alert(error.response?.data?.detail || 'Une erreur est survenue')
+    const detail = error.response?.data?.detail
+    if (Array.isArray(detail)) {
+      // FastAPI validation errors: array of { loc, msg, type }
+      const messages = detail.map((e: any) => `${e.loc?.slice(1).join(' → ')}: ${e.msg}`).join('\n')
+      alert(`Erreur de validation :\n${messages}`)
+    } else {
+      alert(detail || 'Une erreur est survenue')
+    }
   }
 }
 
