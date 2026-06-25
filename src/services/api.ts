@@ -45,6 +45,7 @@ export interface TokenResponse {
 export interface User {
   User_ID: number
   User_mail: string
+  User_DisplayName: string
   User_Subscription: string | null
   User_age: number | null
   User_weight: number | null
@@ -55,6 +56,7 @@ export interface User {
   User_Dietary_Preferences: string | null
   User_Budget_Level: string | null
   User_Injuries: string | null
+  profile_picture_url?: string | null
   isAdmin: boolean
   created_at: string
   updated_at: string
